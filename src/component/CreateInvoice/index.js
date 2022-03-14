@@ -10,21 +10,21 @@ import Select from 'react-select'
 import useGetContactInfo from '../../query/useGetContactInfo';
 import useAddInvoice from '../../query/useAddInvoice';
 import { Button, Modal } from 'react-bootstrap';
-import HEADER from '../Header/index'  
+import HEADER from '../Header/index'
 import {
     useParams,
-  } from "react-router-dom";
+} from "react-router-dom";
 import useGetInvoiceById from '../../query/useGetInvoiceById'
 
 function CREATEINVOICE() {
 
-    const [invoiceValue,setInvoiceValue] = useState({
+    const [invoiceValue, setInvoiceValue] = useState({invoice_number:"dww"});
+
+    const { register, handleSubmit, watch, formState: { errors }, control,setValue } = useForm({
         defaultValues: {
-          due_date: new Date(),
+            due_date: new Date(),
         }
-      });
-    
-    const { register, handleSubmit, watch, formState: { errors }, control } = useForm(invoiceValue)
+    })
     ////console.log(watch('invoiceid'))
 
     ////console.log(register('invoiceid'))
@@ -32,34 +32,42 @@ function CREATEINVOICE() {
 
     let { id } = useParams();
 
-   
-   
+
+
 
     const getInvoiceById = useGetInvoiceById(id);
-    
+
     const [itemsInfo, setItemsInfo] = useState([])
     const [totalAmount, setTotalAmount] = useState({ subTotal: 0, salesTax: 0, total: 0 })
 
-    const [invoiceId,setInvoiceId] = useState('');
+    const [invoiceId, setInvoiceId] = useState('');
     const getUserInfo = useGetContactInfo();
     const addInvoice = useAddInvoice();
-    const [showModel,setModelInfo] = useState({isVisible:false,header:"",body:""});
+    const [showModel, setModelInfo] = useState({ isVisible: false, header: "", body: "" });
 
     const [customerDropDown, setCustomerDropDown] = useState([]);
 
     if (getUserInfo.isError) {
         ////console.log(getUserInfo.error);
     }
-    
-    useEffect(()=>{
-       if(getInvoiceById&&getInvoiceById.isSuccess){
-          let invoiceData = getInvoiceById.data.data.invoice;
-          setInvoiceValue({defaultValues:{...getInvoiceById.data.data.invoice}})
-          setItemsInfo([...invoiceData.line_items])
-          console.log(getInvoiceById.data.data.invoice)
-          console.log(invoiceValue)
-       }
-    },getInvoiceById.data)
+
+    useEffect(() => {
+        if (getInvoiceById && getInvoiceById.isSuccess) {
+            debugger;
+            let invoiceData = getInvoiceById.data.data.invoice;
+            setInvoiceValue({...getInvoiceById.data.data.invoice})
+            setItemsInfo([...invoiceData.line_items])
+            Object.keys(invoiceData).map(x=>{
+                if(!x.includes('date')){
+                    setValue(x,invoiceData[x])                    
+                }else{
+                    setValue(x,Date.parse(invoiceData[x]))      
+                }                
+            })
+            console.log("this is invoice vlaue ",invoiceValue)
+            findSubTotal([...invoiceData.line_items])
+        }
+    }, getInvoiceById.data)
 
 
     useEffect(() => {
@@ -92,9 +100,9 @@ function CREATEINVOICE() {
             item_custom_fields: []
         }])
     }
-    useEffect(()=>{
+    useEffect(() => {
         addItem();
-    },[])
+    }, [])
     const removeItem = (index) => {
         let removeItemList = [...itemsInfo];
         removeItemList.pop();
@@ -107,7 +115,7 @@ function CREATEINVOICE() {
 
         copyList[index][text] = e.target.value;
 
-       
+
         copyList = findAmount(copyList, text, index, e);
 
         findSubTotal(copyList, text, e)
@@ -117,24 +125,24 @@ function CREATEINVOICE() {
         ////console.log(copyList)
 
     }
-    const findSubTotal = (copyList, text, index, e) => {
+    const findSubTotal = (copyList) => {
 
         const ITEMS_TOTAL = "item_total";
-        if (text === "quantity" || text === "rate") {
-            let itemTotal = 0;
-            copyList.forEach(x => {
-                itemTotal += x[ITEMS_TOTAL];
-            })
-            totalAmount.subTotal = itemTotal;
-            totalAmount.salesTax = (.1 * itemTotal).toFixed(2);
-            totalAmount.total = totalAmount.subTotal + parseInt(totalAmount.salesTax);
-            setTotalAmount({ ...totalAmount })
-        }
+        debugger;
+        let itemTotal = 0;
+        copyList.forEach(x => {
+            itemTotal += x[ITEMS_TOTAL];
+        })
+        totalAmount.subTotal = itemTotal;
+        totalAmount.salesTax = (.1 * itemTotal).toFixed(2);
+        totalAmount.total = totalAmount.subTotal + parseInt(totalAmount.salesTax);
+        setTotalAmount({ ...totalAmount })
+
 
     }
     const findAmount = (copyList, text, index, e) => {
 
-        const ITEMS_TOTAL = "item_total";
+        const ITEMS_TOTAL = "item_total";        
         if (text === "quantity") {
             copyList[index][ITEMS_TOTAL] = parseInt(copyList[index]["rate"]) * parseInt(e.target.value);
         }
@@ -151,13 +159,13 @@ function CREATEINVOICE() {
             return;
         }
 
-         for (let index = 0; index < itemsInfo.length; index++) {
-            if(!itemsInfo[index].description||!itemsInfo[index].rate||!itemsInfo[index].item_total){
-                setModelInfo({isVisible:true,header:"validation error",body:`Please fill the ${index+1} list item to proceed further`})
+        for (let index = 0; index < itemsInfo.length; index++) {
+            if (!itemsInfo[index].description || !itemsInfo[index].rate || !itemsInfo[index].item_total) {
+                setModelInfo({ isVisible: true, header: "validation error", body: `Please fill the ${index + 1} list item to proceed further` })
                 return;
-            }             
-         }       
-         debugger
+            }
+        }
+        debugger
         if (datas['date'] > datas['due_date']) {
             alert("Due date should be after invoice date")
             return;
@@ -176,19 +184,19 @@ function CREATEINVOICE() {
 
         invoiceModel.line_items = itemsInfo;
 
-        addInvoice.mutateAsync(invoiceModel).then((x)=>{
+        addInvoice.mutateAsync(invoiceModel).then((x) => {
             ////console.log(x.data.invoice)
             setInvoiceId(x.data.invoice.invoice_number)
-            setModelInfo({isVisible:true,body:`Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`,header:"Error"})
-            
-        }).catch((error)=>{
-            setModelInfo({isVisible:true,body:error.toString(),header:"Error"})
+            setModelInfo({ isVisible: true, body: `Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`, header: "Error" })
+
+        }).catch((error) => {
+            setModelInfo({ isVisible: true, body: error.toString(), header: "Error" })
             ////console.log(error)
         })
 
     }
     const handleClose = () => {
-         setModelInfo({isVisible:false,body:"",header:""})
+        setModelInfo({ isVisible: false, body: "", header: "" })
     }
 
     return (
@@ -198,11 +206,12 @@ function CREATEINVOICE() {
                 <div class='container-fluid invoiceform'>
 
                     <div class='row '>
-                        <label className='col-md-2 invoice_id_label' >Invoice #<br/><span>Invoice id will automically generate</span></label>                       
-                        <input placeholder=""  disabled= 'true' 
-                        className={errors.invoiceid?.type === 'required' ? "col-md-2 fieldrequired" : 'col-md-2 '}
-                        value={invoiceId} />
-                        
+                        <label className='col-md-2 invoice_id_label' >Invoice #<br /><span>Invoice id will automically generate</span></label>
+                        <input placeholder="" disabled='true'
+                           {...register('invoice_number')}
+                            className={errors.invoiceid?.type === 'required' ? "col-md-2 fieldrequired" : 'col-md-2 '}
+                             />
+
                     </div>
                     <div class="row">
                         <label className='col-md-2 requiredLabel'>Customer Name</label>
@@ -217,7 +226,7 @@ function CREATEINVOICE() {
                     </div>
                     <div class="row">
                         <label className='col-md-2'>Order Number</label>
-                        <input type="text" className='col-md-2'  />
+                        <input type="text" className='col-md-2' />
                     </div>
                     <div class="row">
                         <label className='col-md-2 requiredLabel'>Invoice Date* </label>
@@ -237,7 +246,7 @@ function CREATEINVOICE() {
                         </div>
 
                         <label className='offset-0 col-md-2 text-end d-flex align-items-center justify-content-end'>Due Date </label>
-                        <div className='col-md-2' style={{padding:"0px"}}>
+                        <div className='col-md-2' style={{ padding: "0px" }}>
                             <Controller name='due_date' control={control} render={({ field: { onChange, onBlur, value, ref } }) => (
 
                                 <DatePicker
@@ -254,7 +263,7 @@ function CREATEINVOICE() {
                     </div>
                     <div class="row">
                         <label className='col-md-2'>Subject</label>
-                        <textarea className='col-md-3' type="text" />
+                        <textarea className='col-md-3' type="text"  {...register('subject_content')} />
                     </div>
                     <div className="row customborder">
                         <div className="col-md-12">
@@ -267,8 +276,8 @@ function CREATEINVOICE() {
                             <div className='row'>
                                 <div class="col-md-6">
                                     <label class='invoice_add_item ' onClick={addItem}>
-                                       <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
-                                       <span>Add Item</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z" /></svg>
+                                        <span>Add Item</span>
                                     </label>
                                 </div>
                                 <div class="col-md-4 offset-lg-2 invoice_subtotal_area">
@@ -295,7 +304,9 @@ function CREATEINVOICE() {
                             <label>Notes</label>
                         </div>
                         <div className='col-md-8'>
-                            <textarea type="text" placeholder="It was great doing business with you." {...register("notes", { required: false })} className='customTextArea' />
+                            <textarea type="text" placeholder="It was great doing business with you." 
+                            {...register("notes", { required: false })} 
+                            className='customTextArea' />
                         </div>
                     </div>
                     <div class="row invoice_notes">
@@ -303,14 +314,15 @@ function CREATEINVOICE() {
                             <label>Terms & Condition</label>
                         </div>
                         <div className='col-md-8'>
-                            <textarea type="text" className='customTextArea'  {...register("terms", { required: false })} placeholder="It was great doing business with you." />
+                            <textarea type="text" className='customTextArea'  {...register("terms", { required: false })} 
+                            placeholder="It was great doing business with you." />
                         </div>
                     </div>
 
                 </div>
                 <div className='create_invoice_footer' >
                     <div className='row justify-content-end'>
-                        <input type="submit" value={invoiceId?"Update":"Save"} className='col-md-2 btn btn-success  savebutton' />
+                        <input type="submit" value={invoiceId ? "Update" : "Save"} className='col-md-2 btn btn-success  savebutton' />
                     </div>
                 </div>
             </form>
