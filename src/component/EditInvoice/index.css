@@ -1,0 +1,142 @@
+.invoice_parent{
+    margin-top: 5%;
+    min-height: 800px;
+    background-color: #F2F3F5;
+}
+.invoice_button{
+    border-radius: 1px;
+    border:.5px solid gray;
+    margin: 15px;
+    background-color: white;
+    padding: 5px 12px;
+    font-family: 'Ropa Sans', sans-serif;
+    /* box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; */
+}
+.invoice_table_row{
+    width: 60% !important;
+}
+.invoice_button.invoice_save{
+    border: none;
+    background-color: #f46e3e;
+    color: white;
+}
+.invoice_client_info_parent{
+    margin-top: 5%;
+}
+.invoice_text_sec{
+    color: black;
+    width: 20%;
+    border: none;
+    background-color: transparent;
+}
+.invoice_text{
+    color: black;
+    width: 60%;
+    border: none;
+    background-color: transparent;
+}
+.invoice_table_parent{
+    margin-top: 5%;
+}
+.invoice_text:focus{
+   background-color: yellow;
+}
+.invoice_text_sec:focus{
+    background-color: yellow;
+ }
+.invoice_main{
+    padding: 30px;
+    min-height: 400px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    background-color: white; 
+    border-radius: 5px;
+}
+.invoice_side_content{
+    min-height: 400px;
+    /* background-color: orange; */
+}
+.invoice_heading{
+    display: flex;
+    align-items: center;
+}
+.invoice_heading h1{
+  font-size: 55px;
+}
+.thead{
+    /* //background-color: #666666; */
+}
+.invoice_text_table_header{
+    width: 100%;
+    height: 100%;
+    border: none;
+    color: black;
+    font-weight: 100;
+    background-color: transparent;
+}
+.invoice_text_table_body{
+    width: 100%;
+    height: 100%;
+}
+.invoice_add_list_but{
+    background-color: transparent;
+    color: green;
+    border: none;
+}
+.invoice_table_footer{
+    min-height: 200px;
+    margin-top: 1%;
+}
+tr .invoice_remove span{ 
+    visibility: hidden;
+}
+.invoice_remove span{
+    cursor: pointer;
+}
+
+tr:hover .invoice_remove span{
+    visibility: visible;
+}
+
+.invoice_subtotal input{
+    border: none;
+    width: 100%;
+    margin: 1%;
+ }
+ .invoice_total input{
+     background-color: transparent;
+    border: none;
+    width: 100%;
+    margin: 1%;
+ }
+ .invoice_total input:focus{
+    background-color: yellow;
+}
+ .invoice_subtotal_value input{
+     border: none;
+     width: 100%;  
+     margin: 1%;
+}
+.invoice_subtotal input:focus{
+    background-color: yellow;
+ }
+ .invoice_subtotal_value input :focus{
+    background-color: yellow;
+}
+.invoice_total{    
+    padding: 4px;
+    background-color: #e3e3e3;
+}
+@media screen and (max-width:800px) {
+    table input{
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width:600px) {
+    table input{
+        font-size: 12px;
+    }
+    table textarea{
+        font-size: 12px;
+    }
+}

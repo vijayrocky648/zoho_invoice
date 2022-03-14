@@ -1,0 +1,128 @@
+.row{
+    margin:10px 0px;
+}
+.customPad{
+    padding-left: 0px;
+}
+.react-datepicker__input-container input{
+    width: 100%;
+}
+.customDatePicker{
+    padding: 0px;
+}
+#createinvoice input,select,textarea{
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    transition: all .05s ease;
+}
+
+#createinvoice input:focus
+{
+    border: 1px solid gray ;
+    box-shadow: #5EE6EB 0px 1px 4px;
+    outline: 0 none;
+}
+#createinvoice tbody{
+    border: none;
+}
+#createinvoice tr{
+    border-style: none;
+}
+#createinvoice tr td{
+    border: none;
+}
+#createinvoice thead{
+    border-bottom: 1px solid gray;
+}
+
+#createinvoice{
+ 
+    font-size: 15px;
+}
+#createinvoice textarea:focus
+{
+    border: 1px solid gray ;
+    box-shadow: #5EE6EB 0px 1px 4px;
+    /* box-shadow: #4D77FF 0px 6px 24px 0px, #4D77FF 0px 0px 0px 1px; */
+    /* box-shadow:  0px 3px 5px; */
+    outline: 0 none;
+}
+#createinvoice select:focus
+{
+    border: 1px solid gray ;
+    box-shadow: #5EE6EB 0px 1px 4px;
+    /* box-shadow: #4D77FF 0px 6px 24px 0px, #4D77FF 0px 0px 0px 1px; */
+    /* box-shadow:  0px 3px 5px; */
+    outline: 0 none;
+}
+
+#createinvoice select{
+    padding: 5px;
+    background-color: white;
+  
+}
+.invoice_subtotal_area{
+    background-color: #F7F7F7;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+select{
+    width: 100%;
+}
+
+#createinvoice .customTextArea{
+    width: 100%;
+}
+.requiredLabel{
+    color: red;
+}
+.create_invoice_footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 4px;
+    background-color: white;
+    box-shadow: 0px -4px 5px 0px rgba(0,0,0,0.10);
+    
+}
+.invoiceform{
+    font-family: 'Source Sans Pro', sans-serif;
+    padding-bottom: 10%;
+}
+.savebutton{
+    margin-right: 1%;
+}
+.fieldrequired{
+    border: 1px solid red;
+}
+.customborder{
+    border: .5px solid #F7F7F7;
+}
+.invoice_add_list_but{
+    border: none !important;
+}
+
+.invoice_add_list_but :focus{
+    box-shadow: none !important;
+    border: none !important;
+    outline: 0px none;
+    border-style: none !important;
+}
+.invoiceform .row{
+    margin: 20px 0px;
+}
+.invoice_add_item{
+    border-radius: 5px;
+    width: auto;
+    padding: 8px;
+    background-color: #00C897;
+    opacity: 1px;
+}
+.invoice_add_item *{
+   color: white !important;
+   fill: white;
+}
+.invoice_add_item span{    
+    margin:5px;
+}
