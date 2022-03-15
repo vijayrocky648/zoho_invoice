@@ -1,0 +1,14 @@
+.invoice_new{
+    padding: 10px;
+    background-color: #00C897;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}
+.invoice_new:hover{
+    padding: 10px;
+    background-color: #00C897;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}

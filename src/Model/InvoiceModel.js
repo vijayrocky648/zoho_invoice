@@ -1,5 +1,5 @@
 const INVOICEMODEL = {
-
+        reference_number:"",
         payment_terms: '0',
         payment_terms_label: 'Due on Receipt',
         payment_options: {

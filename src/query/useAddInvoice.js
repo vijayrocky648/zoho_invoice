@@ -7,6 +7,7 @@ import {useQuery,useMutation} from 'react-query'
 
 
 const addInvoice = async(data)=>{
+  
     let token = GETTOKEN();    
     return axiosPost(SERVICE_URLS.ADDINVOICE,token,data)
 }

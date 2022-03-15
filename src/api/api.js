@@ -10,3 +10,6 @@ export const  axiosGet = async (url,token)=>{
 export const axiosPost = async (url,token,data)=>{
     return axios.post(url,JSON.stringify(data),HTTP_HEADER(token).POST)
 }
+export const axiosPut = async (url,token,data)=>{
+    return axios.put(url,JSON.stringify(data),HTTP_HEADER(token).PUT)
+}

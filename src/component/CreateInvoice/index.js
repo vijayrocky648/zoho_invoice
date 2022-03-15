@@ -15,20 +15,21 @@ import {
     useParams,
 } from "react-router-dom";
 import useGetInvoiceById from '../../query/useGetInvoiceById'
+import useUpdateInvoice from '../../query/useUpdateInvoice';
 
 function CREATEINVOICE() {
 
-    const [invoiceValue, setInvoiceValue] = useState({invoice_number:"dww"});
 
-    const { register, handleSubmit, watch, formState: { errors }, control,setValue } = useForm({
+
+    const { register, handleSubmit, watch, formState: { errors }, control, setValue } = useForm({
         defaultValues: {
             due_date: new Date(),
         }
     })
-    ////console.log(watch('invoiceid'))
+    //////console.log(watch('invoiceid'))
 
-    ////console.log(register('invoiceid'))
-    const invoiceModel = INVOICEMODEL;
+    //////console.log(register('invoiceid'))
+
 
     let { id } = useParams();
 
@@ -44,39 +45,39 @@ function CREATEINVOICE() {
     const getUserInfo = useGetContactInfo();
     const addInvoice = useAddInvoice();
     const [showModel, setModelInfo] = useState({ isVisible: false, header: "", body: "" });
-
+    const updateInvoice = useUpdateInvoice();
     const [customerDropDown, setCustomerDropDown] = useState([]);
 
     if (getUserInfo.isError) {
-        ////console.log(getUserInfo.error);
+        //////console.log(getUserInfo.error);
     }
 
-    useEffect(() => {
-        if (getInvoiceById && getInvoiceById.isSuccess) {
-            debugger;
+    useEffect(() => {       
+        if (getInvoiceById && getInvoiceById.isSuccess) {       
             let invoiceData = getInvoiceById.data.data.invoice;
-            setInvoiceValue({...getInvoiceById.data.data.invoice})
-            setItemsInfo([...invoiceData.line_items])
-            Object.keys(invoiceData).map(x=>{
-                if(!x.includes('date')){
-                    setValue(x,invoiceData[x])                    
-                }else{
-                    setValue(x,Date.parse(invoiceData[x]))      
-                }                
+            
+            setItemsInfo(invoiceData.line_items)
+            Object.keys(invoiceData).map(x => {
+                if (!x.includes('date')) {
+                    console.log(invoiceData[x]);
+                    setValue(x, invoiceData[x])
+                } else {
+                    setValue(x, new Date(invoiceData[x]))
+                }
             })
-            console.log("this is invoice vlaue ",invoiceValue)
+            console.log(itemsInfo)
             findSubTotal([...invoiceData.line_items])
         }
-    }, getInvoiceById.data)
+    }, [getInvoiceById.data])
 
 
     useEffect(() => {
         if (getUserInfo.data) {
-            ////console.log(getUserInfo.data.data.contacts)
+            //////console.log(getUserInfo.data.data.contacts)
             let getContactInfo = getUserInfo.data.data.contacts;
             if (getContactInfo) {
                 let getCustomerValue = [];
-                getCustomerValue.push({ 'label': '', 'value': '' })
+                getCustomerValue.push({ 'label': '---SELECT---', 'value': '' })
                 getContactInfo.forEach(x => {
                     getCustomerValue.push({ 'label': x.first_name, 'value': x.contact_id })
                 })
@@ -84,10 +85,10 @@ function CREATEINVOICE() {
             }
         }
 
-    }, getUserInfo.data)
+    }, [getUserInfo.data])
 
     const addItem = () => {
-        ///////console.log(LISTMODEL)
+        /////////console.log(LISTMODEL)
         setItemsInfo([...itemsInfo, {
             item_order: '0',
             rate: '0',
@@ -122,7 +123,7 @@ function CREATEINVOICE() {
 
         setItemsInfo(copyList);
 
-        ////console.log(copyList)
+        //////console.log(copyList)
 
     }
     const findSubTotal = (copyList) => {
@@ -142,21 +143,24 @@ function CREATEINVOICE() {
     }
     const findAmount = (copyList, text, index, e) => {
 
-        const ITEMS_TOTAL = "item_total";        
+        const ITEMS_TOTAL = "item_total";
         if (text === "quantity") {
             copyList[index][ITEMS_TOTAL] = parseInt(copyList[index]["rate"]) * parseInt(e.target.value);
         }
         if (text === "rate") {
             copyList[index][ITEMS_TOTAL] = parseInt(copyList[index]["quantity"]) * parseInt(e.target.value);
         }
-        /////////console.log(copyList[index][ITEMS_TOTAL])
+        ///////////console.log(copyList[index][ITEMS_TOTAL])
         return copyList;
     }
 
     const onSubmit = (datas) => {
+        let isError = false;
+        let invoiceModel = INVOICEMODEL;
+        let errorMessage = []
+        console.log(invoiceModel)
         if (totalAmount.total == 0 || totalAmount.total == undefined) {
-            alert("Please Add Item and Amount")
-            return;
+            setModelInfo({ isVisible: true, header: "Validation error", body: `Fill the items to proceed further` })
         }
 
         for (let index = 0; index < itemsInfo.length; index++) {
@@ -165,34 +169,54 @@ function CREATEINVOICE() {
                 return;
             }
         }
-        debugger
+
         if (datas['date'] > datas['due_date']) {
-            alert("Due date should be after invoice date")
+            setModelInfo({ isVisible: true, header: "Validation error", body: `Due date should be greater than Date` })
             return;
         }
-        console.log(datas);
+        //console.log(datas);
         Object.keys(datas).map((x) => {
 
-
-            if (x.includes('date')) {
-                datas[x] = datas[x] ? datas[x]?.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
-                // ////console.log(datas[x]?.toISOString().split('T')[0])
-                //datas[x] = datas[x].toString().toISOString();
+            if (invoiceModel[x] != undefined) {
+                try {
+                    console.log('entering with key value ' + { x });
+                    if (x.includes('date')) {
+                        datas[x] = datas[x] ? datas[x]?.toISOString().split('T')[0] : new Date()?.toISOString().split('T')[0];
+                    }
+                    invoiceModel[x] = datas[x]
+                } catch (ex) {
+                    //console.log(ex);
+                }
             }
-            invoiceModel[x] = datas[x]
+
+
         })
 
         invoiceModel.line_items = itemsInfo;
 
-        addInvoice.mutateAsync(invoiceModel).then((x) => {
-            ////console.log(x.data.invoice)
-            setInvoiceId(x.data.invoice.invoice_number)
-            setModelInfo({ isVisible: true, body: `Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`, header: "Error" })
+        if (id) {
+            console.log(id);
+            updateInvoice.mutateAsync({ id: id, data: invoiceModel }).then((x) => {
+                setModelInfo({ isVisible: true, body: `Invoice Updated Successfully`, header: "Success" })
+                console.log(x)
+            }).catch((ex) => {
+                setModelInfo({ isVisible: true, body: `Invoice Update Failed`, header: "Failed to Update" })
+                alert(ex)
+            })
+        } else {
+            console.log(invoiceModel)
+            addInvoice.mutateAsync(invoiceModel).then((x) => {
+                //////console.log(x.data.invoice)
+                setInvoiceId(x.data.invoice.invoice_number)
+                setModelInfo({ isVisible: true, body: `Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`, header: "Error" })
 
-        }).catch((error) => {
-            setModelInfo({ isVisible: true, body: error.toString(), header: "Error" })
-            ////console.log(error)
-        })
+            }).catch((error) => {
+                setModelInfo({ isVisible: true, body: error.toString(), header: "Error" })
+                //////console.log(error)
+            })
+        }
+
+
 
     }
     const handleClose = () => {
@@ -201,16 +225,16 @@ function CREATEINVOICE() {
 
     return (
         <div>
-            <HEADER Name='Create Invoice'></HEADER>
+            <HEADER Name={id ? "Edit Invoice" : "Create Invoice"}></HEADER>
             <form id='createinvoice' onSubmit={handleSubmit(onSubmit)}>
                 <div class='container-fluid invoiceform'>
 
-                    <div class='row '>
+                    <div class='row  invoice_id_row'>
                         <label className='col-md-2 invoice_id_label' >Invoice #<br /><span>Invoice id will automically generate</span></label>
                         <input placeholder="" disabled='true'
-                           {...register('invoice_number')}
+                            {...register('invoice_number')}
                             className={errors.invoiceid?.type === 'required' ? "col-md-2 fieldrequired" : 'col-md-2 '}
-                             />
+                        />
 
                     </div>
                     <div class="row">
@@ -221,12 +245,11 @@ function CREATEINVOICE() {
                             {customerDropDown.map((x, y) => {
                                 return <option value={x.value}>{x.label}</option>
                             })}
-                        </select>
-
+                        </select>                        
                     </div>
                     <div class="row">
                         <label className='col-md-2'>Order Number</label>
-                        <input type="text" className='col-md-2' />
+                        <input type="text" className='col-md-2' {...register('reference_number')} />
                     </div>
                     <div class="row">
                         <label className='col-md-2 requiredLabel'>Invoice Date* </label>
@@ -251,7 +274,7 @@ function CREATEINVOICE() {
 
                                 <DatePicker
                                     onChange={(date) => {
-                                        ////console.log(date)
+                                        //////console.log(date)
                                         onChange(date);
                                     }}
                                     onBlur={onBlur}
@@ -263,13 +286,13 @@ function CREATEINVOICE() {
                     </div>
                     <div class="row">
                         <label className='col-md-2'>Subject</label>
-                        <textarea className='col-md-3' type="text"  {...register('subject_content')} />
+                        <textarea className='col-md-3' type="text"  {...register('custom_subject')} />
                     </div>
                     <div className="row customborder">
                         <div className="col-md-12">
-                            <table class="table table-hover">
+                            <table class="table">
                                 <TABLEHEADER />
-                                <TABLEROW itemsList={itemsInfo} removeItem={removeItem} addTextForList={addTextForList} />
+                                <TABLEROW itemsList={itemsInfo} removeItem={removeItem} addTextForList={addTextForList}  isEdittable = {true}/>
                             </table>
                         </div>
                         <div class="col-md-12 invoice_table_footer" >
@@ -303,26 +326,26 @@ function CREATEINVOICE() {
                         <div className='col-md-12'>
                             <label>Notes</label>
                         </div>
-                        <div className='col-md-8'>
-                            <textarea type="text" placeholder="It was great doing business with you." 
-                            {...register("notes", { required: false })} 
-                            className='customTextArea' />
+                        <div className='col-md-6'>
+                            <textarea type="text" placeholder="It was great doing business with you."
+                                {...register("notes", { required: false })}
+                                className='customTextArea' />
                         </div>
                     </div>
                     <div class="row invoice_notes">
                         <div className='col-md-12'>
                             <label>Terms & Condition</label>
                         </div>
-                        <div className='col-md-8'>
-                            <textarea type="text" className='customTextArea'  {...register("terms", { required: false })} 
-                            placeholder="It was great doing business with you." />
+                        <div className='col-md-6'>
+                            <textarea type="text" className='customTextArea'  {...register("terms", { required: false })}
+                                placeholder="It was great doing business with you." />
                         </div>
                     </div>
 
                 </div>
                 <div className='create_invoice_footer' >
                     <div className='row justify-content-end'>
-                        <input type="submit" value={invoiceId ? "Update" : "Save"} className='col-md-2 btn btn-success  savebutton' />
+                        <input type="submit" value={id ? "Update" : "Save"} className='col-md-2 btn btn-success  savebutton' />
                     </div>
                 </div>
             </form>

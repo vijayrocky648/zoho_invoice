@@ -1,5 +1,5 @@
 .invoice_parent{
-    margin-top: 5%;
+    
     min-height: 800px;
     background-color: #F2F3F5;
 }
@@ -139,4 +139,23 @@ tr:hover .invoice_remove span{
     table textarea{
         font-size: 12px;
     }
+}
+.labelValue{
+    margin:0px 10px;
+    width: 20%;
+}
+
+.invoice_table_stretch{
+   width: 70%;
+}
+.invoice_width{
+    width: 10%;
+    
+}
+.disable_alltext input{
+    border: none;
+}
+.disable_alltext textarea{
+    resize: none;
+    border: none;
 }

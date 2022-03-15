@@ -35,6 +35,7 @@ function App() {
             <Route path="/createinvoice" element={<CREATEINVOICE />}/>
             <Route path="/editInvoice/:id" element={<CREATEINVOICE />}/>
             <Route path="/listpage" element={<LISTPAGE/>}/>
+            <Route path="/preview/:id" element={<INVOICE/>}/>
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

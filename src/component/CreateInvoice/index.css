@@ -20,7 +20,7 @@
 #createinvoice input:focus
 {
     border: 1px solid gray ;
-    box-shadow: #5EE6EB 0px 1px 4px;
+    /* box-shadow: #5EE6EB 0px 1px 4px; */
     outline: 0 none;
 }
 #createinvoice tbody{
@@ -43,7 +43,7 @@
 #createinvoice textarea:focus
 {
     border: 1px solid gray ;
-    box-shadow: #5EE6EB 0px 1px 4px;
+    /* box-shadow: #5EE6EB 0px 1px 4px; */
     /* box-shadow: #4D77FF 0px 6px 24px 0px, #4D77FF 0px 0px 0px 1px; */
     /* box-shadow:  0px 3px 5px; */
     outline: 0 none;
@@ -51,7 +51,7 @@
 #createinvoice select:focus
 {
     border: 1px solid gray ;
-    box-shadow: #5EE6EB 0px 1px 4px;
+    /* box-shadow: #5EE6EB 0px 1px 4px; */
     /* box-shadow: #4D77FF 0px 6px 24px 0px, #4D77FF 0px 0px 0px 1px; */
     /* box-shadow:  0px 3px 5px; */
     outline: 0 none;
@@ -63,7 +63,8 @@
   
 }
 .invoice_subtotal_area{
-    background-color: #F7F7F7;
+   
+    background-color: #EFFFFD;
     padding-top: 30px;
     padding-bottom: 30px;
 }
@@ -76,6 +77,11 @@ select{
 }
 .requiredLabel{
     color: red;
+}
+.invoice_id_row{
+    background-color: #EFFFFD;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 .create_invoice_footer{
     position: fixed;
@@ -94,7 +100,10 @@ select{
     margin-right: 1%;
 }
 .fieldrequired{
-    border: 1px solid red;
+    border: 1px solid red !important;
+}
+.fieldrequired :focus{
+    box-shadow: none !important;
 }
 .customborder{
     border: .5px solid #F7F7F7;
