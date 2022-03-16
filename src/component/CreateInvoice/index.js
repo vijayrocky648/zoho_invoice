@@ -14,7 +14,7 @@ import HEADER from '../Header/index'
 import {
     useParams,
 } from "react-router-dom";
-import useGetInvoiceById from '../../query/useGetInvoiceById'
+import GetInvoice from '../../query/useGetInvoiceById'
 import useUpdateInvoice from '../../query/useUpdateInvoice';
 
 function CREATEINVOICE() {
@@ -35,44 +35,51 @@ function CREATEINVOICE() {
 
 
 
-
-    const getInvoiceById = useGetInvoiceById(id);
+    const getUserInfo = useGetContactInfo();
+   
 
     const [itemsInfo, setItemsInfo] = useState([])
     const [totalAmount, setTotalAmount] = useState({ subTotal: 0, salesTax: 0, total: 0 })
 
-    const [invoiceId, setInvoiceId] = useState('');
-    const getUserInfo = useGetContactInfo();
+
+   
     const addInvoice = useAddInvoice();
     const [showModel, setModelInfo] = useState({ isVisible: false, header: "", body: "" });
     const updateInvoice = useUpdateInvoice();
     const [customerDropDown, setCustomerDropDown] = useState([]);
+    var customerId = "";
 
     if (getUserInfo.isError) {
         //////console.log(getUserInfo.error);
     }
 
-    useEffect(() => {       
-        if (getInvoiceById && getInvoiceById.isSuccess) {       
-            let invoiceData = getInvoiceById.data.data.invoice;
-            
-            setItemsInfo(invoiceData.line_items)
+     const updateValue =  (getInvoiceById) => {       
+        if (getInvoiceById) {       
+            let invoiceData = getInvoiceById.data.invoice;
+            console.log(invoiceData);
+            setItemsInfo([...invoiceData.line_items])
             Object.keys(invoiceData).map(x => {
-                if (!x.includes('date')) {
-                    console.log(invoiceData[x]);
-                    setValue(x, invoiceData[x])
-                } else {
+              
+                if (x.includes('date')) {
                     setValue(x, new Date(invoiceData[x]))
+                   
+                }else if(x=="customer_id"){
+                    console.log("customer id is set Successfully")
+                    customerId = invoiceData[x];
+                    setValue(x, invoiceData[x])
+                } 
+                else {
+                    setValue(x, invoiceData[x])
                 }
-            })
-            console.log(itemsInfo)
+            })           
             findSubTotal([...invoiceData.line_items])
         }
-    }, [getInvoiceById.data])
+    }
 
 
     useEffect(() => {
         if (getUserInfo.data) {
+            
             //////console.log(getUserInfo.data.data.contacts)
             let getContactInfo = getUserInfo.data.data.contacts;
             if (getContactInfo) {
@@ -82,8 +89,18 @@ function CREATEINVOICE() {
                     getCustomerValue.push({ 'label': x.first_name, 'value': x.contact_id })
                 })
                 setCustomerDropDown(getCustomerValue)
+                console.log("This is for customerId",customerId)
+                customerId&&setValue("customer_id",customerId)
+                 
+                if(id){
+                     GetInvoice(id).then((data)=>{
+                         updateValue(data)
+                     })
+                }
+               
             }
         }
+        
 
     }, [getUserInfo.data])
 
@@ -102,7 +119,7 @@ function CREATEINVOICE() {
         }])
     }
     useEffect(() => {
-        addItem();
+       
     }, [])
     const removeItem = (index) => {
         let removeItemList = [...itemsInfo];
@@ -129,7 +146,7 @@ function CREATEINVOICE() {
     const findSubTotal = (copyList) => {
 
         const ITEMS_TOTAL = "item_total";
-        debugger;
+       
         let itemTotal = 0;
         copyList.forEach(x => {
             itemTotal += x[ITEMS_TOTAL];
@@ -207,7 +224,7 @@ function CREATEINVOICE() {
             console.log(invoiceModel)
             addInvoice.mutateAsync(invoiceModel).then((x) => {
                 //////console.log(x.data.invoice)
-                setInvoiceId(x.data.invoice.invoice_number)
+             
                 setModelInfo({ isVisible: true, body: `Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`, header: "Error" })
 
             }).catch((error) => {
@@ -241,8 +258,8 @@ function CREATEINVOICE() {
                         <label className='col-md-2 requiredLabel'>Customer Name</label>
 
                         {/* <Select options={options} /> */}
-                        <select className={errors.customer_id?.type === 'required' ? "col-md-2 fieldrequired" : 'col-md-2'} {...register("customer_id", { required: true })} defaultValue="">
-                            {customerDropDown.map((x, y) => {
+                        <select className={errors.customer_id?.type === 'required' ? "col-md-2 fieldrequired" : 'col-md-2'} {...register("customer_id", { required: true })} >
+                            {customerDropDown.length>0&&customerDropDown.map((x, y) => {
                                 return <option value={x.value}>{x.label}</option>
                             })}
                         </select>                        

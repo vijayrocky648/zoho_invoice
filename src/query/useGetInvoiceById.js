@@ -10,6 +10,6 @@ const getInvoice = async(id)=>{
     let token = GETTOKEN();    
     return axiosGet(SERVICE_URLS.GETINVOICEBYID(id),token)
 }
-export default function useGetInvoice (id){
-    return useQuery([QUERY_KEYS.INVOICE_DETAILS_BY_ID,id],()=>getInvoice(id),{cacheTime:5000,staleTime:Infinity})
+export default function GetInvoice(id){
+    return getInvoice(id);
 }

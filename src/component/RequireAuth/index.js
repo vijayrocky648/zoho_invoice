@@ -1,5 +1,12 @@
-function RequireAuth({ children }) {
-    const { authed } = useAuth();
-  
-    return authed === true ? children : <Navigate to="/login" replace />;
-  }
+import { Navigate, Outlet } from "react-router-dom";
+
+const useAuth = () => {
+   return localStorage.getItem("authToken")
+};
+
+const AUTHROUTER = () => {
+  const isAuth = useAuth();
+  return isAuth ? <Outlet /> : <Navigate to="/" />;
+};
+
+export default AUTHROUTER;
