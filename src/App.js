@@ -24,9 +24,10 @@ import { useIdleTimer } from 'react-idle-timer'
   const queryClient = new QueryClient();
 
   const handleOnIdle = event => {
-    new Date().getMilliseconds
-     localStorage.removeItem("authToken")
-     alert("Seesion Has Been Expired")
+     if((new Date().getMilliseconds-event)>180000){
+       localStorage.removeItem("authToken")
+       alert("Seesion Has Been Expired")
+     }    
   }
 
   const handleOnActive = event => {

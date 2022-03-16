@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import LISTMODEL from '../../Model/invoiceModelList';
 import TABLEROW from './tablerow';
 import TABLEHEADER from './tableheader';
-import useGetInvoice from '../../query/useGetInvoiceById';
+import GetInvoice from '../../query/useGetInvoiceById';
 import { useParams } from 'react-router-dom';
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
@@ -13,19 +13,23 @@ import jsPDF from 'jspdf'
 
 function INVOICE() {
     const { id } = useParams();
-    const getInvoiceInfo = useGetInvoice(id);
+    // const getInvoiceInfo = useGetInvoice(id);
     const { register, handleSubmit } = useForm();
     const [invoiceModel, setInvoiceModel] = useState({});
     const [itemsInfo, setItemsInfo] = useState([])
     const [totalAmount, setTotalAmount] = useState({ subTotal: 0, salesTax: 0, total: 0 })
 
     useEffect(() => {
-        if (getInvoiceInfo.isSuccess) {
-            setInvoiceModel({ ...getInvoiceInfo.data.data.invoice })
-            findSubTotal([...getInvoiceInfo.data.data.invoice.line_items])
-            console.log(getInvoiceInfo.data.data)
-        }
-    }, [getInvoiceInfo.data])
+        GetInvoice(id).then((getInvoiceInfo)=>{
+            setInvoiceModel({ ...getInvoiceInfo.data.invoice })
+            findSubTotal([...getInvoiceInfo.data.invoice.line_items])
+        })
+        // if (getInvoiceInfo.isSuccess) {
+        //     setInvoiceModel({ ...getInvoiceInfo.data.data.invoice })
+        //     findSubTotal([...getInvoiceInfo.data.data.invoice.line_items])
+        //     console.log(getInvoiceInfo.data.data)
+        // }
+    }, [])
     const addItem = () => {
         ///console.log(LISTMODEL)
         setItemsInfo([...itemsInfo, {
