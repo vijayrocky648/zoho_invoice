@@ -2,7 +2,7 @@
   "name": "zoho_invoice",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://localhost:3000/",
+  "homepage": "https://virtusainvoice.web.app/",
   "dependencies": {
     "@react-pdf/renderer": "^2.1.1",
     "@testing-library/jest-dom": "^5.16.2",
