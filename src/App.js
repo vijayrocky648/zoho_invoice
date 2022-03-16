@@ -13,17 +13,38 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate,
+  Navigate
 } from "react-router-dom";
+import  AUTHROUTER  from './component/RequireAuth';
+import { useIdleTimer } from 'react-idle-timer'
 
 
-function App() {
+  function App() {
   const getToken = GETTOKEN();
   const queryClient = new QueryClient();
 
-  useEffect(() => {
+  const handleOnIdle = event => {
+    new Date().getMilliseconds
+     localStorage.removeItem("authToken")
+     alert("Seesion Has Been Expired")
+  }
 
-  }, [])
+  const handleOnActive = event => {
+    console.log('user is active', event)
+    
+  }
+
+  const handleOnAction = event => {
+    console.log('user did something', event)
+  }
+
+  const { getRemainingTime, getLastActiveTime } = useIdleTimer({
+    timeout:180000,
+    onIdle: handleOnIdle,
+    onActive: handleOnActive,
+    onAction: handleOnAction,
+    debounce: 500
+  })
   return (
 
     <div className='App' id='App'>
@@ -31,11 +52,13 @@ function App() {
         {/* {getToken ? <LISTPAGE /> : <LOGIN />} */}
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<LOGIN />}/>
-            <Route path="/createinvoice" element={<CREATEINVOICE />}/>
-            <Route path="/editInvoice/:id" element={<CREATEINVOICE />}/>
-            <Route path="/listpage" element={<LISTPAGE/>}/>
-            <Route path="/preview/:id" element={<INVOICE/>}/>
+            <Route exact path="/" element={<LOGIN />} />
+            <Route element={<AUTHROUTER />}>
+              <Route path="/create" element={<CREATEINVOICE />} />  
+              <Route path="/listpage" element={<LISTPAGE />} />       
+              <Route path="/editInvoice/:id" element={<CREATEINVOICE/>} /> 
+              <Route path="/preview/:id" element={<INVOICE/>} />             
+            </Route>
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>
