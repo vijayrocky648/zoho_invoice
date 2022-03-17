@@ -13,34 +13,45 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate
+  Navigate, Outlet
 } from "react-router-dom";
-import  AUTHROUTER  from './component/RequireAuth';
+import AUTHROUTER, { useAuth } from './component/RequireAuth';
 import { useIdleTimer } from 'react-idle-timer'
+import { useNavigate } from "react-router-dom";
 
 
-  function App() {
+function App() {
+  const navigate = useNavigate();
   const getToken = GETTOKEN();
   const queryClient = new QueryClient();
 
   const handleOnIdle = event => {
-     if((new Date().getMilliseconds-event)>180000){
-       localStorage.removeItem("authToken")
-       alert("Seesion Has Been Expired")
-     }    
+
+    localStorage.removeItem("authToken")
+
+    alert("Seesion Has Been Expired")
+    navigate('/');
   }
 
+  const ProtectedRoute = ({ redirectPath = '/landing' }) => {
+    if (!useAuth) {
+      return <Navigate to={redirectPath} replace />;
+    }
+
+    return <Outlet />;
+  };
+
   const handleOnActive = event => {
-    console.log('user is active', event)
-    
+
+
   }
 
   const handleOnAction = event => {
-    console.log('user did something', event)
+
   }
 
   const { getRemainingTime, getLastActiveTime } = useIdleTimer({
-    timeout:180000,
+    timeout: 120000,
     onIdle: handleOnIdle,
     onActive: handleOnActive,
     onAction: handleOnAction,
@@ -51,17 +62,17 @@ import { useIdleTimer } from 'react-idle-timer'
     <div className='App' id='App'>
       <QueryClientProvider client={queryClient}>
         {/* {getToken ? <LISTPAGE /> : <LOGIN />} */}
-        <BrowserRouter>
+       
           <Routes>
             <Route exact path="/" element={<LOGIN />} />
-            <Route element={<AUTHROUTER />}>
-              <Route path="/create" element={<CREATEINVOICE />} />  
-              <Route path="/listpage" element={<LISTPAGE />} />       
-              <Route path="/editInvoice/:id" element={<CREATEINVOICE/>} /> 
-              <Route path="/preview/:id" element={<INVOICE/>} />             
+            <Route element={<ProtectedRoute />}>
+              <Route path="/create" element={<CREATEINVOICE />} />
+              <Route path="/listpage" element={<LISTPAGE />} />
+              <Route path="/editInvoice/:id" element={<CREATEINVOICE />} />
+              <Route path="/preview/:id" element={<INVOICE />} />
             </Route>
           </Routes>
-        </BrowserRouter>
+        
       </QueryClientProvider>
 
     </div>

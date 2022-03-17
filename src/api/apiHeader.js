@@ -14,19 +14,19 @@ export  const  HTTP_HEADER = (authToken) => {
             credentials:'include'
         },
         POST:{
-            method:METHODS.GET,
+            method:METHODS.POST,
             mode:'cors',
             headers:_header,
             credentials:'include'
         },
         DELETE:{
-            method:METHODS.GET,
+            method:METHODS.DELETE,
             mode:'cors',
             headers:_header,
             credentials:'include'
         },
         PUT:{
-            method:METHODS.GET,
+            method:METHODS.DELETE,
             mode:'cors',
             headers:_header,
             credentials:'include'

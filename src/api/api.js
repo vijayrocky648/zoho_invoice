@@ -13,3 +13,6 @@ export const axiosPost = async (url,token,data)=>{
 export const axiosPut = async (url,token,data)=>{
     return axios.put(url,JSON.stringify(data),HTTP_HEADER(token).PUT)
 }
+export const axiosDelete = async (url,token)=>{
+    return axios.delete(url,HTTP_HEADER(token).DELETE)
+}

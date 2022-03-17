@@ -3,5 +3,7 @@ export const SERVICE_URLS = {
     ADDINVOICE : '/api/v3/invoices',
     GETINVOICEDETAILS:"/api/v3/invoices",
     GETINVOICEBYID : (id)=>`/api/v3/invoices/${id}`,
-    UPDATE_INVOICE:(id)=>`/api/v3/invoices/${id}`
+    UPDATE_INVOICE:(id)=>`/api/v3/invoices/${id}`,
+    ADDCUSTOMER:"/api/v3/contacts",
+    DELETEINVOICE:(id)=>`/api/v3/invoices/${id}`
 }

@@ -157,7 +157,7 @@ function INVOICE() {
                                 </div>
                             </div>
                             <div class="row invoice_client_info_parent">
-                                <div class="col-md-9">
+                                <div class="col-md-9 ">
                                     <label classname='labelValue' style={{ textDecoration: "underline" }}>Bill To</label>      <br />
                                     <label classname='labelValue'>{invoiceModel["customer_name"]}</label>        <br />
                                     <label classname='labelValue'>{invoiceModel.billing_address?.address}</label><br />
@@ -167,14 +167,14 @@ function INVOICE() {
                                 </div>
                                 <div class="col-md-3">
                                     <div>
-                                        <label >Invoice#:  </label>
-                                        <label className='labelValue'>{invoiceModel["invoice_number"]}</label>
+                                        <label >Invoice#: {invoiceModel["invoice_number"]} </label>
+                                      
                                         <br />
-                                        <label>Invoice Date:  </label>
-                                        <label className='labelValue'>{invoiceModel["date"]}</label>
+                                        <label>Invoice Date: {invoiceModel["date"]}</label>
+                                       
                                         <br />
-                                        <label>Due Date:  </label>
-                                        <label className='labelValue'>{invoiceModel["due_date"]}</label>
+                                        <label>Due Date:  {invoiceModel["due_date"]}</label>
+                                        
                                     </div>
                                 </div>
                             </div>

@@ -1,0 +1,6 @@
+.invoice_custom_input{
+    min-height:35px;
+}
+.invoice_error_input{
+    border: 1px solid red;
+}

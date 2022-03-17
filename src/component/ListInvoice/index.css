@@ -12,3 +12,27 @@
     text-decoration: none;
     border-radius: 10px;
 }
+.invoice_customer{
+    padding: 10px;
+    background-color: rgb(52, 152, 255);
+    color: white;
+    margin-right: 10px;
+    text-decoration: none;
+    border-radius: 10px;
+}
+.invoice_customer:hover{
+    padding: 10px;
+    background-color: rgb(52, 152, 255);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}
+.invoice_custom_input.invoice_error_input:focus{
+    outline: 1px red;
+}
+.link a{
+    text-decoration: none;
+}
+.link label{
+    cursor: pointer;
+}

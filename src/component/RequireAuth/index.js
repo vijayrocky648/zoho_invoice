@@ -1,12 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const useAuth = () => {
+ export const useAuth = () => {
    return localStorage.getItem("authToken")
 };
 
 const AUTHROUTER = () => {
+  debugger
   const isAuth = useAuth();
-  return isAuth ? <Outlet /> : <Navigate to="/" />;
+  return isAuth!=null ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default AUTHROUTER;

@@ -86,7 +86,7 @@ function CREATEINVOICE() {
                 let getCustomerValue = [];
                 getCustomerValue.push({ 'label': '---SELECT---', 'value': '' })
                 getContactInfo.forEach(x => {
-                    getCustomerValue.push({ 'label': x.first_name, 'value': x.contact_id })
+                    getCustomerValue.push({ 'label': x.contact_name, 'value': x.contact_id })
                 })
                 setCustomerDropDown(getCustomerValue)
                 console.log("This is for customerId",customerId)
@@ -122,9 +122,14 @@ function CREATEINVOICE() {
        
     }, [])
     const removeItem = (index) => {
-        let removeItemList = [...itemsInfo];
-        removeItemList.pop();
+        let removeItemList = [];
+        for(let i=0;i<itemsInfo.length;i++){
+           if(index!=i){
+               removeItemList.push(itemsInfo[i])
+           }
+        }
         setItemsInfo(removeItemList)
+        findSubTotal(removeItemList)
     }
     const addTextForList = (e, text, index) => {
 
@@ -172,12 +177,13 @@ function CREATEINVOICE() {
     }
 
     const onSubmit = (datas) => {
-        let isError = false;
+        debugger
         let invoiceModel = INVOICEMODEL;
-        let errorMessage = []
+       
         console.log(invoiceModel)
         if (totalAmount.total == 0 || totalAmount.total == undefined) {
             setModelInfo({ isVisible: true, header: "Validation error", body: `Fill the items to proceed further` })
+            return;
         }
 
         for (let index = 0; index < itemsInfo.length; index++) {
@@ -218,7 +224,7 @@ function CREATEINVOICE() {
                 console.log(x)
             }).catch((ex) => {
                 setModelInfo({ isVisible: true, body: `Invoice Update Failed`, header: "Failed to Update" })
-                alert(ex)
+                
             })
         } else {
             console.log(invoiceModel)
@@ -236,6 +242,13 @@ function CREATEINVOICE() {
 
 
     }
+    
+    useEffect(()=>{
+        if(!id){
+            addItem();
+        }
+    },[])
+
     const handleClose = () => {
         setModelInfo({ isVisible: false, body: "", header: "" })
     }
@@ -374,10 +387,7 @@ function CREATEINVOICE() {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
-                    </Button>
-                    <Button variant="primary" onClick={handleClose}>
-                        Save Changes
-                    </Button>
+                    </Button>                    
                 </Modal.Footer>
             </Modal>
         </div>

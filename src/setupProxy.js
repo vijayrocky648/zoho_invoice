@@ -14,5 +14,12 @@ module.exports = function (app) {
             changeOrigin: true,
         })
     );
+    app.use(
+        '/api/v3/invoice/:id',
+        createProxyMiddleware({
+            target: 'https://invoice.zoho.in',
+            changeOrigin: true,
+        })
+    );
 
 };

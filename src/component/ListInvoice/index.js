@@ -5,9 +5,20 @@ import { Table, Column, HeaderCell, Cell } from "rsuite-table";
 import "rsuite-table/dist/css/rsuite-table.css";
 import useGetInvoice from '../../query/useGetInvoice'
 import './index.css'
+import MyVerticallyCenteredModal from '../CreateModel';
+import { useAuth } from '../RequireAuth';
+import useDeleteInvoice from '../../query/useDeleteInvoice';
+import useGetContactInfo from '../../query/useGetContactInfo';
+
+
+
+
 function LISTPAGE() {
 
   const getInvoiceInfo = useGetInvoice();
+  const [modelVisibility, setModelVisibility] = useState(false);
+  const deleteInvoices = useDeleteInvoice();
+  const getContactInfo = useGetContactInfo();
 
   useEffect(() => {
     console.log(getInvoiceInfo.data)
@@ -16,7 +27,17 @@ function LISTPAGE() {
   const CustomHeaderCell = (props) => {
     return <HeaderCell {...props} style={{ padding: 4, backgroundColor: '#3498ff', color: '#fff' }} />
   }
+
+  const deleteInvoice = (id) => {
+    deleteInvoices.mutateAsync(id).then((data) => {
+      getInvoiceInfo.refetch();
+    }).catch((ex) => {
+
+    })
+    console.log(id)
+  }
   return (
+
     <div >
       <HEADER Name="Virtusa Invoice" />
       <div className='row p-5'>
@@ -24,14 +45,17 @@ function LISTPAGE() {
           <h3 className=''>All Invoices</h3>
         </div>
         <div className='col-md-6 row align-item-center justify-content-end '>
-          <div className='text-end'><Link to="/createinvoice" className='invoice_new'>New Invoice</Link></div>
+          <div className='text-end'>
+            {/* <label to="/createinvoice" className='invoice_customer' onClick={()=>setModelVisibility(true)}>New Customer</label> */}
+            <Link to="/create" className='btn invoice_new'>New Invoice</Link>
+          </div>
         </div>
       </div>
       <div className='row p-2'>
         <div className='col-md-12'>
           <Table
             loading={getInvoiceInfo.isLoading}
-            height={400}
+            height={300}
             autoHeight
             affixHeader
             data={getInvoiceInfo.isSuccess ? getInvoiceInfo.data.data.invoices : []}
@@ -39,11 +63,6 @@ function LISTPAGE() {
               console.log(data);
             }}
           >
-
-            <Column align="center" resizable flexGrow={1}>
-              <CustomHeaderCell>Invoice Id</CustomHeaderCell>
-              <Cell dataKey="invoice_id" />
-            </Column>
 
             <Column resizable sortable flexGrow={1}>
               <CustomHeaderCell>Invoice Name</CustomHeaderCell>
@@ -69,7 +88,10 @@ function LISTPAGE() {
               <CustomHeaderCell>Balance</CustomHeaderCell>
               <Cell dataKey="balance" />
             </Column>
-            <Column width={120} fixed="right">
+           
+
+            
+            <Column width={180} fixed="right">
               <CustomHeaderCell>Action</CustomHeaderCell>
 
               <Cell>
@@ -80,9 +102,10 @@ function LISTPAGE() {
                   }
 
                   return (
-                    <span>
-                      <Link to={{pathname:`/editInvoice/${rowData.invoice_id}`,state: { fromDashboard: false }}}>Edit</Link> | 
-                      <Link to={{pathname:`/preview/${rowData.invoice_id}`,state:{ fromDashboard: false }}} >Preview</Link>
+                    <span className='link'>
+                      <Link to={{ pathname: `/editInvoice/${rowData.invoice_id}`, state: { fromDashboard: false } }}>Edit</Link> |
+                      <Link to={{ pathname: `/preview/${rowData.invoice_id}`, state: { fromDashboard: false } }} >Preview</Link>|
+                      <label style={{ color: "red" }} onClick={() => { deleteInvoice(rowData.invoice_id) }}>Delete</label>
                     </span>
                   );
                 }}
@@ -92,7 +115,71 @@ function LISTPAGE() {
         </div>
 
       </div>
-    </div>);
+      <div className='row p-5'>
+        <div className='col-md-6'>
+          <h3 className=''>Add Customer</h3>
+        </div>
+        <div className='col-md-6 row align-item-center justify-content-end '>
+          <div className='text-end'>
+            <label to="/createinvoice" className='invoice_customer' onClick={() => setModelVisibility(true)}>New Customer</label>
+            <Link to="/create" className='btn invoice_new'>Edit Customer</Link>
+          </div>
+        </div>
+      </div>
+      <div className='row p-2'>
+        <div className='col-md-12'>
+          <Table
+            loading={getContactInfo.isLoading}
+            height={300}
+            autoHeight
+            affixHeader
+            data={getContactInfo.isSuccess ? getContactInfo.data.data.contacts : []}
+            onRowClick={(data) => {
+              console.log(data);
+            }}
+          >
+
+            <Column resizable sortable flexGrow={1}>
+              <CustomHeaderCell>contact_name</CustomHeaderCell>
+              <Cell dataKey="contact_name" />
+            </Column>
+            <Column resizable sortable flexGrow={1}>
+              <CustomHeaderCell>email</CustomHeaderCell>
+              <Cell dataKey="email" />
+            </Column>
+            <Column resizable sortable flexGrow={1}>
+              <CustomHeaderCell>mobile</CustomHeaderCell>
+              <Cell dataKey="mobile" />
+            </Column>
+            <Column resizable sortable flexGrow={1}>
+              <CustomHeaderCell>company_name</CustomHeaderCell>
+              <Cell dataKey="company_name" />
+            </Column>
+            <Column width={180} fixed="right">
+              <CustomHeaderCell>Action</CustomHeaderCell>
+
+              <Cell>
+                {rowData => {
+                  function handleAction() {
+                    debugger;
+
+                  }
+
+                  return (
+                    <span className='link'>
+                      <label style={{ color: "red" }} onClick={() => { deleteInvoice(rowData.invoice_id) }}>Delete</label>
+                    </span>
+                  );
+                }}
+              </Cell>
+            </Column>
+          </Table>
+        </div>
+
+      </div>
+      <MyVerticallyCenteredModal show={modelVisibility} onHide={() => setModelVisibility(false)} />
+    </div>)
+
 }
 
 export default LISTPAGE;
