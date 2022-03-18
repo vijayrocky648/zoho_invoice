@@ -1,13 +1,13 @@
 [[redirects]]
-  from = "https://eloquent-allen-da04f5.netlify.app/api/v3/invoices/"
-  to = "https://invoice.zoho.in/api/v3/invoices/"
+  from = "/api/v3/invoices/"
+  to = "https://invoice.zoho.in"
   status = 200
   force = true 
   headers = {X-From = "Netlify"}
 
   [[redirects]]
-  from = "https://eloquent-allen-da04f5.netlify.app/api/v3/contacts/"
-  to = "https://invoice.zoho.in/api/v3/contacts/"
+  from = "/api/v3/contacts/"
+  to = "https://invoice.zoho.in"
   status = 200
   force = true 
   headers = {X-From = "Netlify"}
