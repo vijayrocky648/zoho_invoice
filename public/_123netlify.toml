@@ -1,6 +1,0 @@
-[[redirects]]
-  from = "/api/v3/invoices"
-  to = "https://invoice.zoho.com"
-  status = 200
-  force = true 
-  headers = {X-From = "Netlify"}
