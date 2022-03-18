@@ -7,7 +7,7 @@
 
   [[redirects]]
   from = "/*"
-  to = "https://eloquent-allen-da04f5.netlify.app/index.html"
+  to = "/index.html"
   status = 200
   force = true 
   headers = {X-From = "Netlify"}
