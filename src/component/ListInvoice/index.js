@@ -9,6 +9,7 @@ import MyVerticallyCenteredModal from '../CreateModel';
 import { useAuth } from '../RequireAuth';
 import useDeleteInvoice from '../../query/useDeleteInvoice';
 import useGetContactInfo from '../../query/useGetContactInfo';
+import useDeleteContact from '../../query/useDeleteContact';
 
 
 
@@ -19,6 +20,8 @@ function LISTPAGE() {
   const [modelVisibility, setModelVisibility] = useState(false);
   const deleteInvoices = useDeleteInvoice();
   const getContactInfo = useGetContactInfo();
+  const [customerId,setCustomerId] = useState(null);
+  const deleteContacts = useDeleteContact();
 
   useEffect(() => {
     console.log(getInvoiceInfo.data)
@@ -35,6 +38,22 @@ function LISTPAGE() {
 
     })
     console.log(id)
+  }
+  const deleteContact = (id)=>{
+    deleteContacts.mutateAsync(id).then((data)=>{
+      getContactInfo.refetch();
+      setModelVisibility(false);
+    }).catch((ex)=>{
+      setModelVisibility(false);
+    }).finally((data)=>{
+      getContactInfo.refetch();
+      setModelVisibility(false);
+    })
+  }
+  const editContact = (id)=>{
+    debugger
+    setModelVisibility(true)
+    setCustomerId(id)
   }
   return (
 
@@ -167,7 +186,8 @@ function LISTPAGE() {
 
                   return (
                     <span className='link'>
-                      <label style={{ color: "red" }} onClick={() => { deleteInvoice(rowData.invoice_id) }}>Delete</label>
+                       <label style={{ color: "green" }} onClick={() => { editContact(rowData.contact_id) }}>Edit</label>|
+                      <label style={{ color: "red" }} onClick={() => { deleteContact(rowData.contact_id) }}>Delete</label>
                     </span>
                   );
                 }}
@@ -177,7 +197,7 @@ function LISTPAGE() {
         </div>
 
       </div>
-      <MyVerticallyCenteredModal show={modelVisibility} onHide={() => setModelVisibility(false)} />
+      <MyVerticallyCenteredModal show={modelVisibility} onHide={() => setModelVisibility(false)} id = {customerId} />
     </div>)
 
 }

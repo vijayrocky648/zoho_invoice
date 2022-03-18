@@ -2,23 +2,51 @@ import { Modal, Button } from 'react-bootstrap'
 import './index.css'
 import { useForm } from "react-hook-form";
 import useAddCustomer from '../../query/useAddCustomer';
+import { useEffect } from 'react';
+import getContact from '../../query/useGetContactById';
+import useUpdateContact from '../../query/useUpdateContact';
 
 
 function MyVerticallyCenteredModal(props) {
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-  const { register, handleSubmit, watch,reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, watch,reset,setValue, formState: { errors } } = useForm();
   const addCustomer =useAddCustomer();
+  const updateCustomer = useUpdateContact();
+
+
   const onSubmit = (data) => {
+   
     console.log(data);
-    addCustomer.mutateAsync(data).then((data)=>{
-      alert("success")
-    }).catch((ex)=>{
-      alert("failed")
-    }).finally(()=>{
-      reset()
-    })
+    if(props.id){
+      delete data.trader_name
+      delete data.legal_name
+      updateCustomer.mutateAsync({id:props.id,data:data}).then((data)=>{
+        alert("update")
+      }).catch((ex)=>{
+        alert(ex)
+      })
+    }else{
+      addCustomer.mutateAsync(data).then((data)=>{
+        alert("success")
+      }).catch((ex)=>{
+        alert("failed")
+      }).finally(()=>{
+        reset()
+      })
+    }    
   };
-  console.log(errors)
+
+
+   useEffect(()=>{
+
+    getContact(props.id).then((data)=>{
+      console.log(data.data.contact)
+       reset(data.data.contact)
+    }).catch((ex)=>{
+      console.log(ex)
+    })
+
+   },[props.id])
   return (
     <Modal
 
