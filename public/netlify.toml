@@ -2,4 +2,5 @@
   from = "/api/v3/invoices"
   to = "https://invoice.zoho.com"
   status = 200
-  force = true # COMMENT: ensure that we always redirect
+  force = true 
+  headers = {X-From = "Netlify"}
