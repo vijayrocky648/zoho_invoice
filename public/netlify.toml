@@ -1,6 +1,6 @@
 [[redirects]]
   from = "https://eloquent-allen-da04f5.netlify.app/api/*"
-  to = "https://invoice.zoho.in/api/v3/invoices"
+  to = "https://invoice.zoho.in/api/:splat"
   status = 200
   force = true 
   headers = {X-From = "Netlify"}
