@@ -18,6 +18,7 @@ import {
 import AUTHROUTER, { useAuth } from './component/RequireAuth';
 import { useIdleTimer } from 'react-idle-timer'
 import { useNavigate } from "react-router-dom";
+import EXECPTION from './component/ExeceptionPage';
 
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
               <Route path="/editInvoice/:id" element={<CREATEINVOICE />} />
               <Route path="/preview/:id" element={<INVOICE />} />
             </Route>
+            <Route path="/exception" element={<EXECPTION label="Unauthorized User" />} />
           </Routes>
         
       </QueryClientProvider>

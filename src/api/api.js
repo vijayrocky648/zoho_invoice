@@ -1,11 +1,21 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 import {HTTP_HEADER} from './apiHeader'
 
-export const  axiosGet = async (url,token)=>{
-   
-    let header = HTTP_HEADER(token).GET;
 
-    return  await axios.get(url,header)
+const ErrorRedirect = (ex)=>{
+    const history = useNavigate();
+    history("/exception")
+}
+
+export const  axiosGet = async (url,token)=>{
+    //let navigate = Navigate();
+  
+    let header = HTTP_HEADER(token).GET;
+    
+    
+    return   axios.get(url,header)
 }
 export const axiosPost = async (url,token,data)=>{
     return axios.post(url,JSON.stringify(data),HTTP_HEADER(token).POST)

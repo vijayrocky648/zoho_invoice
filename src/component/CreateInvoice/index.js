@@ -52,7 +52,7 @@ function CREATEINVOICE() {
     var customerId = "";
 
     if (getUserInfo.isError) {
-        //////console.log(getUserInfo.error);
+      history("/exception")
     }
 
      const updateValue =  (getInvoiceById) => {       

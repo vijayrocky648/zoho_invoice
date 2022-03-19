@@ -6,7 +6,7 @@ import LISTMODEL from '../../Model/invoiceModelList';
 import TABLEROW from './tablerow';
 import TABLEHEADER from './tableheader';
 import GetInvoice from '../../query/useGetInvoiceById';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 
@@ -18,17 +18,14 @@ function INVOICE() {
     const [invoiceModel, setInvoiceModel] = useState({});
     const [itemsInfo, setItemsInfo] = useState([])
     const [totalAmount, setTotalAmount] = useState({ subTotal: 0, salesTax: 0, total: 0 })
-
+    const navigate= useNavigate();
     useEffect(() => {
         GetInvoice(id).then((getInvoiceInfo)=>{
             setInvoiceModel({ ...getInvoiceInfo.data.invoice })
             findSubTotal([...getInvoiceInfo.data.invoice.line_items])
-        })
-        // if (getInvoiceInfo.isSuccess) {
-        //     setInvoiceModel({ ...getInvoiceInfo.data.data.invoice })
-        //     findSubTotal([...getInvoiceInfo.data.data.invoice.line_items])
-        //     console.log(getInvoiceInfo.data.data)
-        // }
+        }).catch((ex)=>{
+            navigate("/exception");
+        })       
     }, [])
     const addItem = () => {
         ///console.log(LISTMODEL)

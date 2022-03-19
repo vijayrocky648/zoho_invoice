@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HEADER from '../Header/index';
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Table, Column, HeaderCell, Cell } from "rsuite-table";
 import "rsuite-table/dist/css/rsuite-table.css";
 import useGetInvoice from '../../query/useGetInvoice'
@@ -11,7 +11,7 @@ import useDeleteInvoice from '../../query/useDeleteInvoice';
 import useGetContactInfo from '../../query/useGetContactInfo';
 import useDeleteContact from '../../query/useDeleteContact';
 import COMMONMODEL from '../Model';
-
+  
 
 
 
@@ -24,14 +24,16 @@ function LISTPAGE() {
   const [customerId,setCustomerId] = useState(null);
   const deleteContacts = useDeleteContact();
   const [modelError,setModelError] = useState({isVisible:false,header:"",body:""})
-
-  useEffect(() => {
-    /////console.log(getInvoiceInfo.data)
-  }, getInvoiceInfo.data)
+  const navigate = useNavigate();
+  if(getInvoiceInfo.isError){
+    navigate("/exception")
+  }
 
   const CustomHeaderCell = (props) => {
     return <HeaderCell {...props} style={{ padding: 4, backgroundColor: '#3498ff', color: '#fff' }} />
   }
+}
+}
 
   const deleteInvoice = (id) => {
     deleteInvoices.mutateAsync(id).then((data) => {
