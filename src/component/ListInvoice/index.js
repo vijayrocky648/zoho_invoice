@@ -32,8 +32,7 @@ function LISTPAGE() {
   const CustomHeaderCell = (props) => {
     return <HeaderCell {...props} style={{ padding: 4, backgroundColor: '#3498ff', color: '#fff' }} />
   }
-}
-}
+
 
   const deleteInvoice = (id) => {
     deleteInvoices.mutateAsync(id).then((data) => {
