@@ -178,14 +178,16 @@ function CREATEINVOICE() {
 
         const ITEMS_TOTAL = "item_total";
         if (text === "quantity") {
-            debugger
+           
             let quantity = isNaN(parseInt(e.target.value))?0:parseInt(e.target.value); 
             let value = parseInt(copyList[index]["rate"]) * quantity;
             copyList[index][ITEMS_TOTAL] = value;
         }
         if (text === "rate") {
-            
-            copyList[index][ITEMS_TOTAL] = parseInt(copyList[index]["quantity"]) * isNaN(parseInt(e.target.value))?0:parseInt(e.target.value); 
+             debugger
+            let rate = isNaN(parseInt(e.target.value))?0:parseInt(e.target.value); 
+            let value = parseInt(copyList[index]["quantity"]) * rate;
+            copyList[index][ITEMS_TOTAL] = value; 
         }
         ///////////console.log(copyList[index][ITEMS_TOTAL])
         return copyList;
