@@ -46,7 +46,7 @@ function CREATEINVOICE() {
 
    
     const addInvoice = useAddInvoice();
-    const [showModel, setModelInfo] = useState({ isVisible: false, header: "", body: "" });
+    const [showModel, setModelInfo] = useState({ isVisible: false, header: "", body: "",isRedirect:false });
     const updateInvoice = useUpdateInvoice();
     const [customerDropDown, setCustomerDropDown] = useState([]);
     var customerId = "";
@@ -197,19 +197,19 @@ function CREATEINVOICE() {
        
         console.log(invoiceModel)
         if (totalAmount.total == 0 || totalAmount.total == undefined) {
-            setModelInfo({ isVisible: true, header: "Validation error", body: `Fill the items to proceed further` })
+            setModelInfo({ isVisible: true, header: "Validation error", body: `Fill the items to proceed further`,isRedirect:false  })
             return;
         }
 
         for (let index = 0; index < itemsInfo.length; index++) {
             if (!itemsInfo[index].description || !itemsInfo[index].rate || !itemsInfo[index].item_total) {
-                setModelInfo({ isVisible: true, header: "validation error", body: `Please fill the ${index + 1} list item to proceed further` })
+                setModelInfo({ isVisible: true, header: "validation error", body: `Please fill the ${index + 1} list item to proceed further`,isRedirect:false })
                 return;
             }
         }
 
         if (datas['date'] > datas['due_date']) {
-            setModelInfo({ isVisible: true, header: "Validation error", body: `Due date should be greater than Date` })
+            setModelInfo({ isVisible: true, header: "Validation error", body: `Due date should be greater than Date`,isRedirect:false  })
             return;
         }
         //console.log(datas);
@@ -235,10 +235,10 @@ function CREATEINVOICE() {
         if (id) {
             console.log(id);
             updateInvoice.mutateAsync({ id: id, data: invoiceModel }).then((x) => {
-                setModelInfo({ isVisible: true, body: `Invoice Updated Successfully`, header: "Success" })
+                setModelInfo({ isVisible: true, body: `Invoice Updated Successfully`, header: "Success",isRedirect:true  })
                 console.log(x)
             }).catch((ex) => {
-                setModelInfo({ isVisible: true, body: `Invoice Update Failed`, header: "Failed to Update" })
+                setModelInfo({ isVisible: true, body: `Invoice Update Failed`, header: "Failed to Update",isRedirect:true  })
                 
             })
         } else {
@@ -246,10 +246,10 @@ function CREATEINVOICE() {
             addInvoice.mutateAsync(invoiceModel).then((x) => {
                 //////console.log(x.data.invoice)
              
-                setModelInfo({ isVisible: true, body: `Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`, header: "Error" })
+                setModelInfo({ isVisible: true, body: `Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`, header: "Error",isRedirect:true  })
                
             }).catch((error) => {
-                setModelInfo({ isVisible: true, body: error.toString(), header: "Error" })
+                setModelInfo({ isVisible: true, body: error.toString(), header: "Error",isRedirect:true  })
                
             })
         }
@@ -265,7 +265,10 @@ function CREATEINVOICE() {
     },[])
 
     const handleClose = () => {
-        history("/listpage")
+        if(showModel.isRedirect){
+            history("/listpage")
+        }
+      
         setModelInfo({ isVisible: false, body: "", header: "" })
     }
 

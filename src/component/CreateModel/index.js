@@ -21,15 +21,19 @@ function MyVerticallyCenteredModal(props) {
       delete data.trader_name
       delete data.legal_name
       updateCustomer.mutateAsync({id:props.id,data:data}).then((data)=>{
-        alert("update")
+        props.isSuccess()
+        alert("Success Fully Updated")
       }).catch((ex)=>{
-        alert(ex)
+        alert("Failed to Update")
+        props.isFailed()
       })
     }else{
       addCustomer.mutateAsync(data).then((data)=>{
-        alert("success")
+        props.isSuccess()
+        alert("Success Fully Added")
       }).catch((ex)=>{
-        alert("failed")
+        props.isFailed()
+        alert("Failed to Add")
       }).finally(()=>{
         reset()
       })

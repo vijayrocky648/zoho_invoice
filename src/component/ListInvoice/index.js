@@ -55,7 +55,7 @@ function LISTPAGE() {
     })
   }
   const editContact = (id)=>{
-  
+     
     setModelVisibility(true)
     setCustomerId(id)
   }
@@ -203,7 +203,7 @@ function LISTPAGE() {
         </div>
 
       </div>
-      <MyVerticallyCenteredModal show={modelVisibility} onHide={() => setModelVisibility(false)} id = {customerId} />
+      <MyVerticallyCenteredModal show={modelVisibility} onHide={() => setModelVisibility(false)} id = {customerId} isSuccess={()=>{ setModelVisibility(false)}} isFailure={()=> {setModelVisibility(false)}} />
       <COMMONMODEL isVisible={modelError.isVisible} handleClose={()=>{setModelError({isVisible:false,header:"",body:""})}} header={modelError.header} body={modelError.body} />
     </div>)
 
