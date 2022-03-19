@@ -12,10 +12,12 @@ import useAddInvoice from '../../query/useAddInvoice';
 import { Button, Modal } from 'react-bootstrap';
 import HEADER from '../Header/index'
 import {
-    useParams,
+    useParams,useNavigate
 } from "react-router-dom";
 import GetInvoice from '../../query/useGetInvoiceById'
 import useUpdateInvoice from '../../query/useUpdateInvoice';
+import COMMONMODEL from '../Model';
+
 
 function CREATEINVOICE() {
 
@@ -36,7 +38,7 @@ function CREATEINVOICE() {
 
 
     const getUserInfo = useGetContactInfo();
-   
+    let history = useNavigate();
 
     const [itemsInfo, setItemsInfo] = useState([])
     const [totalAmount, setTotalAmount] = useState({ subTotal: 0, salesTax: 0, total: 0 })
@@ -133,31 +135,40 @@ function CREATEINVOICE() {
     }
     const addTextForList = (e, text, index) => {
 
+       const re = /^[0-9\b]+$/;
+        
 
         let copyList = [...itemsInfo];
+         
+        if(text=="quantity"||text=="rate"){
+            if(re.test(e.target.value)||e.target.value==''){
+                copyList[index][text] = e.target.value;
+            }         
+        }else{
+            copyList[index][text] = e.target.value;
+        }
+        
 
-        copyList[index][text] = e.target.value;
-
-
-        copyList = findAmount(copyList, text, index, e);
-
-        findSubTotal(copyList, text, e)
+        if ((e.target.value === '' || re.test(e.target.value)) && (text=="quantity"||text=="rate")) {
+            copyList = findAmount(copyList, text, index, e);
+            findSubTotal(copyList, text, e);
+         }
+      
 
         setItemsInfo(copyList);
-
-        //////console.log(copyList)
 
     }
     const findSubTotal = (copyList) => {
 
         const ITEMS_TOTAL = "item_total";
-       
+        debugger
         let itemTotal = 0;
         copyList.forEach(x => {
             itemTotal += x[ITEMS_TOTAL];
         })
-        totalAmount.subTotal = itemTotal;
-        totalAmount.salesTax = (.1 * itemTotal).toFixed(2);
+        let itemValue = isNaN(itemTotal)|| itemTotal=="NaN"?0:parseInt(itemTotal);
+        totalAmount.subTotal = itemValue
+        totalAmount.salesTax = (.1 * itemValue).toFixed(2);
         totalAmount.total = totalAmount.subTotal + parseInt(totalAmount.salesTax);
         setTotalAmount({ ...totalAmount })
 
@@ -167,10 +178,14 @@ function CREATEINVOICE() {
 
         const ITEMS_TOTAL = "item_total";
         if (text === "quantity") {
-            copyList[index][ITEMS_TOTAL] = parseInt(copyList[index]["rate"]) * parseInt(e.target.value);
+            debugger
+            let quantity = isNaN(parseInt(e.target.value))?0:parseInt(e.target.value); 
+            let value = parseInt(copyList[index]["rate"]) * quantity;
+            copyList[index][ITEMS_TOTAL] = value;
         }
         if (text === "rate") {
-            copyList[index][ITEMS_TOTAL] = parseInt(copyList[index]["quantity"]) * parseInt(e.target.value);
+            
+            copyList[index][ITEMS_TOTAL] = parseInt(copyList[index]["quantity"]) * isNaN(parseInt(e.target.value))?0:parseInt(e.target.value); 
         }
         ///////////console.log(copyList[index][ITEMS_TOTAL])
         return copyList;
@@ -232,10 +247,10 @@ function CREATEINVOICE() {
                 //////console.log(x.data.invoice)
              
                 setModelInfo({ isVisible: true, body: `Invoice Created Successfully, Invoice Number: ${x.data.invoice.invoice_number}`, header: "Error" })
-
+               
             }).catch((error) => {
                 setModelInfo({ isVisible: true, body: error.toString(), header: "Error" })
-                //////console.log(error)
+               
             })
         }
 
@@ -250,6 +265,7 @@ function CREATEINVOICE() {
     },[])
 
     const handleClose = () => {
+        history("/listpage")
         setModelInfo({ isVisible: false, body: "", header: "" })
     }
 
@@ -316,7 +332,7 @@ function CREATEINVOICE() {
                     </div>
                     <div class="row">
                         <label className='col-md-2'>Subject</label>
-                        <textarea className='col-md-3' type="text"  {...register('custom_subject')} />
+                        <textarea className='col-md-3' type="text"  {...register('subject_content')} />
                     </div>
                     <div className="row customborder">
                         <div className="col-md-12">
@@ -379,17 +395,7 @@ function CREATEINVOICE() {
                     </div>
                 </div>
             </form>
-            <Modal show={showModel.isVisible} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>{showModel.header}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>{showModel.body}</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>                    
-                </Modal.Footer>
-            </Modal>
+            <COMMONMODEL isVisible = {showModel.isVisible} handleClose = {handleClose} body={showModel.body} header={showModel.header}/>
         </div>
 
     );

@@ -65,16 +65,27 @@ function INVOICE() {
 
     }
     const addTextForList = (e, text, index) => {
-
+        const re = /^[0-9\b]+$/;
+        
 
         let copyList = [...itemsInfo];
+         debugger;
+        if(text=="quantity"||text=="rate"){
+            if(re.test(e.target.value)){
+                copyList[index][text] = e.target.value;
+            } else{
+                copyList[index][text]= copyList[index][text];
+            }          
+        }else{
+            copyList[index][text] = e.target.value;
+        }
+        
 
-        copyList[index][text] = e.target.value;
-
-
-        copyList = findAmount(copyList, text, index, e);
-
-        findSubTotal(copyList, text, e)
+        if ((e.target.value === '' || re.test(e.target.value)) && (text=="quantity"||text=="rate")) {
+            copyList = findAmount(copyList, text, index, e);
+            findSubTotal(copyList, text, e);
+         }
+      
 
         setItemsInfo(copyList);
 
@@ -138,9 +149,9 @@ function INVOICE() {
                     <div class="row justify-content-center">
                         <div class="col-md-9 d-flex justify-content-center">
 
-                            <input type="button" className="invoice_button" value="Send" />
+                            {/* <input type="button" className="invoice_button" value="Send" /> */}
                             <input type="button" className="invoice_button" value="Get PDF" onClick={generatePdf} />
-                            <input type="button" className="invoice_button" value="Send" />
+                            {/* <input type="button" className="invoice_button" value="Send" /> */}
 
                         </div>
                         <div class="col-md-8 col-sm-12 invoice_main" id='invoice_area'>
@@ -153,7 +164,7 @@ function INVOICE() {
                                     <label classname='labelValue'>India</label>        <br />
                                 </div>
                                 <div class="col-md-3 order-sm-1 order-lg-2 invoice_heading">
-                                    <h1>INVOICE</h1>
+                                    <h1 className='h1'>INVOICE</h1>
                                 </div>
                             </div>
                             <div class="row invoice_client_info_parent">

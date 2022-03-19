@@ -13,7 +13,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate, Outlet
+  Navigate, Outlet,useLocation
 } from "react-router-dom";
 import AUTHROUTER, { useAuth } from './component/RequireAuth';
 import { useIdleTimer } from 'react-idle-timer'
@@ -22,11 +22,12 @@ import { useNavigate } from "react-router-dom";
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
   const getToken = GETTOKEN();
   const queryClient = new QueryClient();
 
   const handleOnIdle = event => {
-
+    console.log(location)
     localStorage.removeItem("authToken")
 
     alert("Seesion Has Been Expired")
@@ -43,7 +44,7 @@ function App() {
 
   const handleOnActive = event => {
 
-
+   
   }
 
   const handleOnAction = event => {
@@ -51,7 +52,7 @@ function App() {
   }
 
   const { getRemainingTime, getLastActiveTime } = useIdleTimer({
-    timeout: 120000,
+    timeout: 180000,
     onIdle: handleOnIdle,
     onActive: handleOnActive,
     onAction: handleOnAction,

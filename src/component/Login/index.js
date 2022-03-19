@@ -3,6 +3,7 @@ import HEADER from '../Header';
 import ICON from '../../Images/login.svg'
 
 
+
 function LOGIN() {
     const [updateURL,setUpdateURL] = useState("")
     useEffect(()=>{
@@ -18,7 +19,7 @@ function LOGIN() {
             <HEADER Name='Virtusa Invoice' />
             <div className='row align-item-center' style={{ height: "88%" }}>
                 <div className='col-md-6 d-flex align-items-center'>
-                    <img src={ICON} alt="Login Image" />
+                    <img src={ICON} alt="Login Image" className='img-fluid' />
                 </div>
                 <div className='col-md-6 d-flex align-items-center justify-content-center'>
                     <div className='text-center'>

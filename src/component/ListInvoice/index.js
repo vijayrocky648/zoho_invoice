@@ -10,6 +10,7 @@ import { useAuth } from '../RequireAuth';
 import useDeleteInvoice from '../../query/useDeleteInvoice';
 import useGetContactInfo from '../../query/useGetContactInfo';
 import useDeleteContact from '../../query/useDeleteContact';
+import COMMONMODEL from '../Model';
 
 
 
@@ -22,9 +23,10 @@ function LISTPAGE() {
   const getContactInfo = useGetContactInfo();
   const [customerId,setCustomerId] = useState(null);
   const deleteContacts = useDeleteContact();
+  const [modelError,setModelError] = useState({isVisible:false,header:"",body:""})
 
   useEffect(() => {
-    console.log(getInvoiceInfo.data)
+    /////console.log(getInvoiceInfo.data)
   }, getInvoiceInfo.data)
 
   const CustomHeaderCell = (props) => {
@@ -37,21 +39,23 @@ function LISTPAGE() {
     }).catch((ex) => {
 
     })
-    console.log(id)
+    /////console.log(id)
   }
   const deleteContact = (id)=>{
     deleteContacts.mutateAsync(id).then((data)=>{
       getContactInfo.refetch();
       setModelVisibility(false);
     }).catch((ex)=>{
+      setModelError({isVisible:true,header:"Error!!!",body:ex.response.data.message})
+      console.log(ex.response.data.message);
       setModelVisibility(false);
-    }).finally((data)=>{
+    }).finally(()=>{
       getContactInfo.refetch();
       setModelVisibility(false);
     })
   }
   const editContact = (id)=>{
-    debugger
+  
     setModelVisibility(true)
     setCustomerId(id)
   }
@@ -63,11 +67,13 @@ function LISTPAGE() {
         <div className='col-md-6'>
           <h3 className=''>All Invoices</h3>
         </div>
-        <div className='col-md-6 row align-item-center justify-content-end '>
-          <div className='text-end'>
+        <div className='col-md-6 '>
+           <div className='text-lg-end text-sm-start' >
+           <Link to="/create" className='btn invoice_new'>New Invoice</Link>
+           </div>
             {/* <label to="/createinvoice" className='invoice_customer' onClick={()=>setModelVisibility(true)}>New Customer</label> */}
-            <Link to="/create" className='btn invoice_new'>New Invoice</Link>
-          </div>
+            
+          
         </div>
       </div>
       <div className='row p-2'>
@@ -79,7 +85,7 @@ function LISTPAGE() {
             affixHeader
             data={getInvoiceInfo.isSuccess ? getInvoiceInfo.data.data.invoices : []}
             onRowClick={(data) => {
-              console.log(data);
+              /////console.log(data);
             }}
           >
 
@@ -135,13 +141,13 @@ function LISTPAGE() {
 
       </div>
       <div className='row p-5'>
-        <div className='col-md-6'>
+        <div className='col-md-6 col-sm-6'>
           <h3 className=''>Add Customer</h3>
         </div>
-        <div className='col-md-6 row align-item-center justify-content-end '>
-          <div className='text-end'>
-            <label to="/createinvoice" className='invoice_customer' onClick={() => setModelVisibility(true)}>New Customer</label>
-            <Link to="/create" className='btn invoice_new'>Edit Customer</Link>
+        <div className='col-md-6 row align-item-center justify-content-end col-sm-6'>
+          <div className='text-lg-end text-sm-start'>
+            <label to="/createinvoice" className='btn invoice_new' onClick={() => setModelVisibility(true)}>New Customer</label>
+           
           </div>
         </div>
       </div>
@@ -154,7 +160,7 @@ function LISTPAGE() {
             affixHeader
             data={getContactInfo.isSuccess ? getContactInfo.data.data.contacts : []}
             onRowClick={(data) => {
-              console.log(data);
+              /////console.log(data);
             }}
           >
 
@@ -198,6 +204,7 @@ function LISTPAGE() {
 
       </div>
       <MyVerticallyCenteredModal show={modelVisibility} onHide={() => setModelVisibility(false)} id = {customerId} />
+      <COMMONMODEL isVisible={modelError.isVisible} handleClose={()=>{setModelError({isVisible:false,header:"",body:""})}} header={modelError.header} body={modelError.body} />
     </div>)
 
 }

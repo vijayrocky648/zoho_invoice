@@ -27,6 +27,7 @@ const INVOICEMODEL = {
         project_id: "",
         documents: [],
         mail_attachments: [],
-        is_tcs_amount_in_percent: true
+        is_tcs_amount_in_percent: true,
+        subject_content:""
 }
 export default INVOICEMODEL;
